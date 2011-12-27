@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+ <head >
+  <title>GET TO THE END</title>
+ </head>
+ <style type="text/css">
+ 	@import url("Style.css");
+ </style>
+ <script src="Utils.js"></script>
+ <script src="Player.js"></script>
+ <script src="Level.js"></script>
+ <script src="World.js"></script>
+ <script src="Main.js"></script>
+ <body>
+  <canvas id="worldCanvas" width="720" height="480"></canvas>
+  <button  id="bOutput" type="button" onclick=outputLevel(mWorld.currentLevel,tArea)>Output Level</button>
+  <button id="bUndo" type="button" onclick=Undo()>Undo</button>
+  <button id="bClear" type="button" onclick="mWorld.currentLevel.Objects =[]">Clear</button>
+  <input  id="exit" type="checkbox">
+  <textarea id="lOutput" rows="20" cols="20">
+  </textarea>
+  <script>
+  
+  	var Canvas = document.getElementById("worldCanvas");
+  	var tArea = document.getElementById("lOutput");
+  	var bOutput = document.getElementById("bOutput");
+  	var bUndo = document.getElementById("bUndo");
+  	var bClear = document.getElementById("bClear");
+  	var cExit = document.getElementById("exit");
+  	
+  	Init(Canvas);
+  	
+  	window.onkeydown = function(event){
+  		keyDown(event.keyCode);
+  	}
+  	
+  	window.onkeyup = function(event){
+  		keyUp(event.keyCode);
+  	}
+  	
+  </script>	
+ </body>
+</html>
