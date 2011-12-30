@@ -7,29 +7,106 @@
  	@import url("Style.css");
  </style>
  <script src="Utils.js"></script>
+ <script src="LevelTools.js"></script>
  <script src="Player.js"></script>
+ <script src="Particle.js"></script>
  <script src="Level.js"></script>
  <script src="World.js"></script>
  <script src="Main.js"></script>
  <body>
+  <div id="tools" class="selectTools">
+   <input id="rObj" name="mouseAdd" onchange="updateDebugOpt()" type=radio>Object<br />
+   <input id="rObs" name="mouseAdd" onchange="updateDebugOpt()" type=radio>Obsticle<br />
+   <input id="rExit" name="mouseAdd" onchange="updateDebugOpt()" type=radio>Exit<br />
+   <input id="rPart" name="mouseAdd" onchange="updateDebugOpt()" type=radio>Particle System<br />
+   <input id="rLine" name="mouseAdd" onchange="updateDebugOpt()" type=radio>Line<br />
+   <hr />
+   <button  id="bOutputs" type="button" onclick=outputLevel(mWorld.Levels,tArea)>Output All Levels</button>
+   <button  id="bOutput" type="button" onclick=outputLevel(mWorld.currentLevel,tArea)>Output Current Level</button>
+   <br />
+   <button id="bUndo" type="button" onclick=mWorld.Undo()>Undo</button>
+   <hr />
+   <textarea id="lOutput" rows="5" cols="25">
+   </textarea>
+  </div>
   <canvas id="worldCanvas" width="720" height="480"></canvas>
-  <button  id="bOutput" type="button" onclick=outputLevel(mWorld.currentLevel,tArea)>Output Level</button>
-  <button id="bUndo" type="button" onclick=Undo()>Undo</button>
-  <button id="bClear" type="button" onclick="mWorld.currentLevel.Objects =[]">Clear</button>
-  <input  id="exit" type="checkbox">
-  <textarea id="lOutput" rows="20" cols="20">
-  </textarea>
+  <div id="options" class="toolOptions">
+	<div id="objOpt">
+		Visible:
+	   <input id="objOptVis" type=checkbox>
+	   Not Yet Implimented
+	  </div>
+	  <div id="partOpt">
+	  	Type:
+	   <select id="partOptType" >
+	  	<option value=0>Circle</option>
+	   </select>
+	   <br />
+	   Max Particles:<input id="partOptMaxPart" value="20" type=text size="5">
+	   <br />
+	   Area X:<input id="partOptAreaX" value="1" type=text size="5">
+	   <br />
+	   Area Y:<input id="partOptAreaY" value="1" type=text size="5">
+	   <br />
+	   Deg Range L:<input id="partOptDegL" value="0.2" type=text size="5">
+	   <br />
+	   Deg Range H:<input id="partOptDegH" value="1.0" type=text size="5">
+	   <br />
+	   Velocity X Low:<input id="partOptVelXL" value="-10" type=text size="5">
+	   <br />
+	   Velocity X High:<input id="partOptVelXH" value="10" type=text size="5">
+	   <br />
+	   Velocity Y Low:<input id="partOptVelYL" value="-10" type=text size="5">
+	   <br />
+	   Velocity Y High:<input id="partOptVelYH" value="10" type=text size="5">
+	   <br />
+	   Size Low:<input id="partOptSizeL" value="0.5" type=text size="5">
+	   <br />
+	   Size High:<input id="partOptSizeH" value="3" type=text size="5">
+	   <br />
+	   Life Low:<input id="partOptLifeL" value="5" type=text size="5">
+	   <br />
+	   Life High:<input id="partOptLifeH" value="10" type=text size="5">
+	   <br />
+	   Color:<input id="partOptColor" value="red" type=text size="5">
+	   <br />
+	   Emit Amount: <input id="partOptEmitAmt" value="0" type=text size="5">
+	   <br />
+	   Emit Time:<input id="partOptEmitTime" value="0" type=text size="5">
+	  </div>
+	  <div id="extOpt">
+	  	Connects to Level:
+	   <input id="extOptCon" value="0" size="5" type=text>
+	  </div>
+	  <div id="obsOpt">
+	  	Enabled:
+	   <select id="obsOptEnabled">
+	  	<option value=1>True</option>
+	    <option value=0>False</option>
+	   </select>
+	   <br />
+	   Damage:
+	   <input id="obsOptDmg" type=text value="-10" size="5">
+	   <br />
+	    Show Obsticles:
+	   <input id="cObs" type=checkbox>
+	  </div>
+	  <div id="lineOpt">
+	   Width:<input id="lineOptWdth" value="5" size="5" type=text>
+	   Not Yet Implimented
+	  </div>  	
+  </div>
   <script>
-  
+
+  	var divTool = document.getElementById("tools");
+  	var eOptions = document.getElementById("options");
+  	
   	var Canvas = document.getElementById("worldCanvas");
   	var tArea = document.getElementById("lOutput");
-  	var bOutput = document.getElementById("bOutput");
-  	var bUndo = document.getElementById("bUndo");
-  	var bClear = document.getElementById("bClear");
-  	var cExit = document.getElementById("exit");
-  	
+	var cObs = document.getElementById("cObs");
+	
   	Init(Canvas);
-  	
+
   	window.onkeydown = function(event){
   		keyDown(event.keyCode);
   	}

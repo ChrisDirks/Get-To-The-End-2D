@@ -3,11 +3,18 @@ var Player = function() {
 	
 	this.Size = new Vector(10,16);
 	this.Controller = new Controller;
+	this.Health = 100;
+	this.maxHealth = 100;
+	this.dmgTime = 0.0;
+	this.dmgTimeLimit= 4.5
+	this.dmgCooldown = false;
 	this.Bounds = {};
 	this.Bounds.left;
 	this.Bounds.right;
 	this.Bounds.top;
 	this.Bounds.bottem;
+	this.dead = false;
+	this.DamageTexts = [];
 }
 
 Player.prototype.setPos = function(x,y) {
@@ -28,6 +35,77 @@ Player.prototype.updateBounds = function() {
 	
 }
 
+Player.prototype.Update = function (fTime) {
+	
+	if(this.dmgCooldown){
+		this.dmgTime = this.dmgTime - fTime;
+		if(this.dmgTime <=0){
+			this.dmgCooldown = false;
+			this.Controller.state = "";
+		}
+	}
+	this.damageUpdate(fTime);
+	this.Controller.Update(fTime);
+	this.updateBounds();
+}
+
+Player.prototype.Render = function (mContext) {
+	this.drawPlayer(mContext);
+	this.drawDmg(mContext);
+}
+
+Player.prototype.setPosition = function (mX,mY) {
+	this.Controller.Position = new Vector(mX,mY);
+	this.updateBounds();
+}
+
+Player.prototype.drawPlayer = function(mContext) {
+	
+	mContext.fillStyle = "grey";
+	mContext.strokeStyle = "white";
+	
+	var left = this.Controller.Position.x-5;
+	var top = this.Controller.Position.y-8;
+	
+	mContext.fillRect(left,top,10,16);
+	mContext.strokeRect(left,top,10,16);
+}
+
+Player.prototype.drawDmg = function(mContext) {
+	var dmgTexts = this.DamageTexts;
+	
+	
+	
+	mContext.font = "6pt Verdana";
+
+	for(var i=0;i<dmgTexts.length;i++){
+		var mFade = dmgTexts[i].time/dmgTexts[i].maxTime;
+		var mFade = (mFade>=0)? mFade:0;
+		mContext.strokeStyle = "rgba(255,0,0,"+ mFade + ")";
+		mContext.strokeText(dmgTexts[i].text,dmgTexts[i].Position.x,dmgTexts[i].Position.y);
+	}
+	
+}
+
+Player.prototype.applyDamage = function(val){
+	if(this.dmgCooldown)
+		return;
+		
+	this.Health += val;
+	
+	if(this.Health <= 0){
+		this.dead = false;
+		return true;
+	}
+	var dmgTxt = new DamageText(this.Controller.Position.x,this.Bounds.top+5,val);
+	this.DamageTexts.push(dmgTxt);
+	
+	this.dmgTime = this.dmgTimeLimit;
+	this.dmgCooldown = true;
+	
+	return false;
+}
+
 var Controller = function() {
 	
 	this.Position = new Vector();
@@ -40,6 +118,7 @@ var Controller = function() {
 	this.grounded = false;
 	this.jumpHeight = 10;
 	this.jumpDist = 0;
+	this.collisioneventReset = false;
 	this.state = "Falling";
 }
 
@@ -127,5 +206,41 @@ Controller.prototype.Jump = function() {
 
 Controller.prototype.resetStatus = function() {
 	this.state = "";
+	this.Velocity = new Vector(0,0);
+	this.moveRight = false;
+	this.moveLeft = false;
 	this.grounded = false;
-} 
+}
+
+Player.prototype.Reset = function (){
+	this.Health = this.maxHealth;
+	this.DamageTexts = [];
+	this.dead = false;
+	this.Controller.resetStatus();
+	return true;
+}
+
+Player.prototype.damageUpdate = function (fTime){
+	var dmgTexts = this.DamageTexts;
+	var deadArray = [];
+	for(var i=0;i<dmgTexts.length;i++){
+		if(dmgTexts[i].time<=0){
+			deadArray.push(i);
+			continue;
+		}
+		dmgTexts[i].Position.y += -0.2;
+		dmgTexts[i].time = dmgTexts[i].time-fTime;
+	}
+	
+	for(var i=0;i<deadArray.length;i++){
+		dmgTexts.splice(deadArray[i],1);
+	}
+}
+
+var DamageText = function(x,y,mString){
+	this.Position = new Vector(x,y);
+	this.text = mString;
+	this.time = 20.0;
+	this.fade = 1;
+	this.maxTime = this.time;
+}

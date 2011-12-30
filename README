@@ -1,1 +1,58 @@
 Get To The End 2D is a 2D Game Engine
+
+To run the game, run Index.html
+
+Controls:
+
+a: Move Left
+d: Move Right
+space: Jump
+
+Play through the game first before messing with 
+the Level Generation tools on the lefthand side.
+
+If using the Level Gen tools:
+
+To place  an Object, exit, line or obsticle. Click and drag to place.
+
+To place a particle effect simply click once.
+
+After placing your desired level elements, hit "output level" to generate the level data for
+your current level.
+
+if making multiple changes to many levels. hit "output all levels" to generate level data for all active levels.
+
+to add your new level data to the initial loadout of the game. Open Levels.txt and paste your code over the code
+associated with the level you edited. Or paste over the entire file if output all levels was used.
+
+if making a brand new level to have an exit connect to it you must add a line of code inside its parameters after pasting 
+it onto the end of the Levels.txt
+
+your code may look something like this:
+
+<My New Level Title>
+:playerstart 100 472
+:size 720 480
+:exit 614 457 629 480 2
+;
+
+change it to this
+
+<My New Level Title>
+:playerstart 100 472
+:size 720 480
+:index 20
+:exit 614 457 629 480 2
+;
+
+the index line is how exits find your level
+just add an exit to an existing level and set its connects to property to the one you picked.
+you can also just change the last number in the exit property with is the index it connects to.
+make sure not to use an index that has already been clamied by other levels.
+
+
+The tools are very new and prone to break. Incorrect tools input may break the game,
+as will drawing collision objects over the play.
+
+Enjoy.
+
