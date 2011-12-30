@@ -1,6 +1,12 @@
 Get To The End 2D is a 2D Game Engine
 
-To run the game, run Index.html
+Currently, to run the game. You must install Aptana studio.
+http://www.aptana.com/products/studio3
+
+Import the project using File->Import->Existing File Into Workspace.
+and select the Engine folder.
+
+Then open Index.Html inside the editor and hit Run.
 
 Controls:
 
